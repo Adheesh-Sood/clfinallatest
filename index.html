@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassCraft</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+
+</head>
+
+<body style="background: #131313">
+    <div class="h1div">
+        <h1 id="titles" class="title">ClassCraft</h1>
+
+    </div>
+    <div class="classcode">
+        <center><input id="classcode" class="classcode" placeholder="Enter The lesson code">
+        <br>
+        <br>
+        <br>
+        <button id="go">
+            <script src="https://cdn.lordicon.com/lordicon.js"></script>
+            <lord-icon
+                    src="https://cdn.lordicon.com/kkvxgpti.json"
+                    trigger="hover"
+                    colors="primary:#30e849"
+                    style="width:100px;height:100px">
+            </lord-icon>
+            </button>
+        </center>
+    </div>
+    <center>
+    <button id="finish">Finish</button>
+    </center>
+    <center>
+        <button id="quizgo">Go to Quiz</button>
+        <br>
+    </center>
+    <center>
+        <h1 id="scoresub" class="title">Score Submited!</h1>
+    </center>
+    <br>
+    <br>
+    <br>
+    <br>
+<center>
+    <span id="typed-text">
+    </span>
+    <span id="arrow" class="hidden"></span>
+</center>
+
+
+
+</body>
+<script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+</script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+    import { getDatabase, ref, push, set,onValue} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    const firebaseConfig = {
+        apiKey: "AIzaSyB54rMo9k-zgp2eRoThQxooySKsNzRonUM",
+        authDomain: "classcraft-6be34.firebaseapp.com",
+        projectId: "classcraft-6be34",
+        databaseURL: "https://classcraft-6be34-default-rtdb.asia-southeast1.firebasedatabase.app",
+        storageBucket: "classcraft-6be34.appspot.com",
+        messagingSenderId: "945811480596",
+        appId: "1:945811480596:web:604a3f32d46a9427f30701",
+        measurementId: "G-3KM6RDH8SH"
+        };
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const database = getDatabase(app);
+    let vid;
+    let text;
+    let dataIframe;
+    let c;
+    let t;
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+    const API_KEY = "AIzaSyCnE9X9LeELjBNPdzVvnA0TwvautSaYbL8"
+    const genAI = new GoogleGenerativeAI('AIzaSyCnE9X9LeELjBNPdzVvnA0TwvautSaYbL8');
+    const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+    async function run() { 
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const prompt = 'whats the videoId for   ' + '<iframe width="560" height="315" src="https://www.youtube.com/embed/ZzaPdXTrSb8?si=de7faGAnqyotQ0k_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>'
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        text = response.text();
+        console.log(text);
+    }
+    run()
+    //Replace dummy videoId with the actual videoId level : significant!!!!
+    // function getVideoInfo(videoId) {
+    //     const apiKeyYTdataV3 = 'AIzaSyDNhJ1ItihGsxJPjFQYSDLmCW5YCUycizw'; // Replace with your actual YouTube Data API key
+    //     const apiEndpoint = `https://www.googleapis.com/youtube/v3/videos?id=${text}&key=${'AIzaSyDNhJ1ItihGsxJPjFQYSDLmCW5YCUycizw'}&part=snippet`;
+    //     fetch(apiEndpoint)
+    // .   then(response => response.json())
+    // .   then(data => {
+    //         if (data.items && data.items.length > 0) {
+    //             const title = data.items[0].snippet.title;
+    //             const channel = data.items[0].snippet.channelTitle;
+    //             c = channel;
+    //             t = title;
+    //             console.log(`Title: ${title}, Channel: ${channel}`);
+    //     }   else {
+    //             console.error('No items found in the response data.');
+    //     }
+    // })
+    // .catch(error => console.error('Error:', error));
+    // }
+    // getVideoInfo('ZzaPdXTrSb8');
+    function getVideoInfo(videoId) {
+        const apiKeyYTdataV3 = 'AIzaSyDNhJ1ItihGsxJPjFQYSDLmCW5YCUycizw'; // Replace with your actual YouTube Data API key
+        const apiEndpoint = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKeyYTdataV3}&part=snippet`;
+
+        fetch(apiEndpoint)
+            .then(response => response.json())
+            .then(data => {
+                const title = data.items[0].snippet.title;
+                const channel = data.items[0].snippet.channelTitle;
+                console.log(`Title: ${title}, Channel: ${channel}`);
+                c = channel;
+                t = title;
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    const videoId = 'ZzaPdXTrSb8'; // Replace with the actual video ID
+    getVideoInfo(videoId);
+
+
+    async function finall(){
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const prompt = 'what is this video about  '
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        text = response.text();
+        console.log(text);
+        
+
+
+    }
+    document.getElementById("useaiinquiz").addEventListener("click", ()=>{
+        run();
+        console.log(document.getElementById("classcode").value);
+        const dbRef = ref(database, 'room/' + document.getElementById('classcode').value + '/data');
+        onValue(dbRef, (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+            const childKey = childSnapshot.key;
+            const childData = childSnapshot.val();
+            console.log(childData);
+            const videoID = vid
+            getVideoInfo(text);
+            console.log(vid);
+            console.log(text);
+            finall();
+    // ...
+  });
+}, {
+  onlyOnce: true
+});
+    })
+// ...
+
+</script>
+
+<script type="module" src="index.js"></script>
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>-->
+<script src="bundle.js"></script>
+
+</html>
